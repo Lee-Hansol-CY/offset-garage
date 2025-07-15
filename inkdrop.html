@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFSET GARAGE - Inkdrop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Arial Narrow 폰트 임베딩 (실제 폰트 파일 사용 권장) -->
+</head>
+<body>
+
+    <!-- Header (main.html과 동일) -->
+    <header class="site-header">
+        <div class="header-left">
+            <a href="index.html" class="logo-link">
+                <div class="logo-box">
+                    <img src="assets/images/logo.svg" alt="OFFSET GARAGE Logo">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="inkdrop.html" class="nav-button">Inkdrop</a>
+                <button id="about-button" class="nav-button">About</button>
+            </nav>
+        </div>
+        <div class="theme-switcher">
+            <button id="theme-toggle-button" class="theme-button">(SYSTEM)</button>
+            <div id="theme-dropdown" class="theme-dropdown hidden">
+                <button data-theme="system">SYSTEM</button>
+                <button data-theme="light">LIGHT</button>
+                <button data-theme="dark">DARK</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Guestbook Grid -->
+    <main id="guestbook-grid">
+        <!-- 방명록 게시글 박스들이 동적으로 여기에 추가될 예정 -->
+        <!-- 예시 방명록 박스 (텍스트만, 클릭 불가) -->
+        <div class="thumbnail-box guestbook-entry ratio-1-1">
+            <div class="content text-only initial-padding">
+                <p class="fs-18">안녕하세요! OFFSET GARAGE 정말 멋집니다. 앞으로의 작품도 기대돼요!</p>
+            </div>
+        </div>
+        <div class="thumbnail-box guestbook-entry ratio-4-3">
+            <div class="content text-only initial-padding">
+                <p class="fs-18">새로운 방문자입니다. 여기 디자인 정말 독특하고 좋아요.</p>
+            </div>
+        </div>
+        <div class="thumbnail-box guestbook-entry ratio-1-2">
+            <div class="content text-only initial-padding">
+                <p class="fs-18">오랜만에 들렀는데 여전히 좋네요. 드래그 기능도 신기해요.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- About Overlay (main.html과 동일) -->
+    <div id="about-overlay" class="hidden">
+        <div class="about-content">
+            <button id="close-about-button">(CLOSE)</button>
+            <h2>About OFFSET GARAGE</h2>
+            <p class="fs-18">이곳은 OFFSET GARAGE의 소개글이 들어갈 자리입니다. 창의적인 아이디어를 아카이빙하고 공유하는 공간입니다. 이 웹사이트는 클린 아키텍처와 모듈화 원칙에 따라 설계되었습니다.</p>
+            <p class="fs-18">This is a placeholder text for the 'About' section. OFFSET GARAGE is a space for archiving and sharing creative ideas. This website is designed with clean architecture and modular principles.</p>
+        </div>
+    </div>
+
+    <!-- Guestbook Input Area (Viewport 하단 고정) -->
+    <div class="guestbook-input-container">
+        <textarea id="guestbook-input" class="fs-18" placeholder="방명록을 남겨주세요 (최대 100자)..." maxlength="100"></textarea>
+        <div class="input-controls">
+            <span id="char-count" class="fs-12 char-limit-text">0/100</span>
+            <button id="drop-it-button" class="nav-button">drop it!</button>
+        </div>
+        <div id="guestbook-message" class="guestbook-message fs-14 hidden"></div>
+    </div>
+
+    <!-- Footer (main.html과 동일) -->
+    <footer class="site-footer-bottom">
+        <p class="fs-14">(C) 2025. OFFSET GARAGE. LEE HANSOL ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/thumbnailManager.js"></script> <!-- 썸네일 박스 관리 (초기 배치만 사용) -->
+    <script src="js/guestbook.js"></script> <!-- Inkdrop 페이지 전용 스크립트 -->
+    <script src="js/main.js"></script> <!-- 공통 기능 (About 등) -->
+</body>
+</html>
