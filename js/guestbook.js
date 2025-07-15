@@ -156,16 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         guestbookGrid.appendChild(newEntry);
 
-        // Position the new entry using thumbnailManager's logic, but without making it draggable
-        // thumbnailManager.js needs a function for this.
-        // For now, a simplified random positioning:
-        const maxX = guestbookGrid.offsetWidth - newEntry.offsetWidth - 40;
-        const maxY = guestbookGrid.offsetHeight - newEntry.offsetHeight - 40;
-        const randomX = Math.random() * maxX + 20;
-        const randomY = Math.random() * maxY + 20;
-        newEntry.style.left = `${randomX}px`;
-        newEntry.style.top = `${randomY}px`;
-        newEntry.style.zIndex = guestbookGrid.children.length; // Simple z-index
+        // After adding the new entry, re-initialize thumbnails for the guestbook grid
+        // This will position the new entry and ensure no overlaps with existing ones.
+        window.initializeThumbnails('guestbook-grid', true); // Enable dragging for guestbook entries
     }
 
     // Initial load of guestbook entries (frontend simulation)
@@ -177,6 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             "다크모드도 깔끔하고 좋아요."
         ];
         initialEntries.forEach(entry => addGuestbookEntryToDOM(entry));
+        // Initialize thumbnails after all initial entries are added
+        window.initializeThumbnails('guestbook-grid', true); // Enable dragging for guestbook entries
     }
 
     // Call initial load

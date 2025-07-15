@@ -61,7 +61,7 @@ window.initializeThumbnails = function(containerId, enableDragging = true) {
                 const overlapX = Math.max(0, Math.min(currentDraggableRight, otherRight) - Math.max(currentDraggableLeft, otherLeft));
                 const overlapY = Math.max(0, Math.min(currentDraggableBottom, otherBottom) - Math.max(currentDraggableTop, otherTop));
 
-                if (overlapX > MIN_OVERLAP && overlapY > MIN_OVERLAP) { // If both X and Y overlap more than MIN_OVERLAP
+                if (overlapX > MIN_OVERLAP || overlapY > MIN_OVERLAP) { // If either X or Y overlap more than MIN_OVERLAP
                     overlaps = true;
                     break; // Overlaps, try new position
                 }
