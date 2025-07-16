@@ -3,6 +3,7 @@
 - **Working Directory:** /Users/hansol/Documents/06-development/offset-garage
 - **Project:** offset-garage - A personal portfolio website.
 - **Current Status:** The project has been successfully migrated to a Next.js application. The guestbook functionality, including creating and deleting entries, is fully implemented and working correctly. The draggable artwork functionality is now fully operational. The next major task is to implement a feature for uploading and managing artwork.
+
 - **Migration Progress:**
     - **Framework:** Next.js with TypeScript.
     - **Styling:** Tailwind CSS is fully configured and operational.
@@ -20,6 +21,7 @@
         *   Deleting entries (`DELETE`) with localhost-only visibility for the delete button.
     5.  **Draggable Artwork:** Implemented smooth, persistent draggable artwork thumbnails with correct click vs. drag behavior.
     6.  **Deployment Fixes:** Resolved various build and deployment issues (TypeScript errors, `_document` errors, incorrect Netlify project linking).
+    7.  **7-17-artwork Mobile Optimization Fix:** Addressed a minor bug related to mobile optimization within the `7-17-artwork` folder.
 
 - **Next Steps (v0.2-beta):**
     1.  **Artwork Management Feature:**
