@@ -29,7 +29,7 @@ export default function useDraggable<T extends HTMLElement>(options: DraggableOp
   // Function to parse current transform values
   const getTranslateValues = useCallback((element: HTMLElement) => {
     const style = window.getComputedStyle(element);
-    const transform = style.transform || style.webkitTransform || style.mozTransform;
+    const transform = style.transform || style.webkitTransform;
 
     let mat = transform.match(/^matrix\((.+)\)$/);
     if (mat) {

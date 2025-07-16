@@ -18,7 +18,31 @@
 **2025-07-16: Guestbook Delete Functionality**
 - **Problem:** The guestbook delete button was not working correctly. Deleting an entry resulted in a 500 error, and the entry would reappear on the page.
 - **Analysis:** The `revalidatePath` function, which is necessary to invalidate the Next.js cache and update the UI, was being called in `src/app/api/guestbook/route.ts` without being imported. This caused a server-side error.
-- **Solution:** The `revalidatePath` function was imported from `next/cache` in the API route. Additionally, the path was changed from `/api/guestbook` to `/inkdrop` to correctly revalidate the page where the guestbook is displayed. This resolved the error and ensured that deleted entries are properly removed from the UI.
+    - **Solution:** The `revalidatePath` function was imported from `next/cache` in the API route. Additionally, the path was changed from `/api/guestbook` to `/inkdrop` to correctly revalidate the page where the guestbook is displayed. This resolved the error and ensured that deleted entries are properly removed from the UI.
+
+**2025-07-16: Draggable Artwork Functionality & Deployment Issues**
+- **Problem:** Draggable artwork thumbnails were not behaving as expected:
+    1.  Initial attempts to drag resulted in minimal movement or no response.
+    2.  After successful drag, thumbnails reverted to their original positions upon mouse release.
+    3.  Dragging from the center or text areas of the thumbnail box was not possible, only the edges.
+    4.  Deployment to Netlify failed due to TypeScript errors (`mozTransform`) and `PageNotFoundError` (`_document`).
+    5.  Incorrect deployment target (`gpa-calculator-2025` instead of `offset-garage`).
+- **Analysis:**
+    1.  Initial drag issues were due to inefficient `left`/`top` property updates causing repaint issues.
+    2.  Reverting to original position was because the `useDraggable` hook did not persist the final dragged position, and `ThumbnailBox` was re-rendering with `initialLeft`/`initialTop`.
+    3.  Dragging from the center/text areas was due to browser's default drag behavior on text/images and `pointer-events` CSS properties.
+    4.  TypeScript error was due to outdated `mozTransform` property in `useDraggable.ts`. `PageNotFoundError` was a Next.js build issue related to `_document` in App Router.
+    5.  Deployment to wrong target was a user error in specifying the Netlify project ID and a lingering memory in the agent.
+- **Solution:**
+    1.  Refactored `useDraggable.ts` to use `transform: translate()` for smoother animations, leveraging `requestAnimationFrame` for optimized updates.
+    2.  Implemented state management within `useDraggable.ts` to store and return the final dragged position, which is then passed back to `ThumbnailBox` to persist the new location.
+    3.  Added `draggable="false"` to text elements and `pointer-events-all` to `ThumbnailBox` to ensure all areas are draggable and prevent browser's default drag behavior.
+    4.  Removed `mozTransform` from `useDraggable.ts` to resolve TypeScript error. Cleared Next.js build cache (`.next` directory) and reinstalled `node_modules` to resolve `PageNotFoundError`.
+    5.  Unlinked the incorrect Netlify project and relinked to the correct project ID (`8493e900-0067-47cd-b6bc-c44f0d9ed941`) before successful deployment to `https://leehansol.world`.
+- **Current Status:** Draggable artwork functionality is now fully operational and deployed.
+- **Future Tasks (v0.2-beta):**
+    -   All UI/UX components and feature testing.
+    -   Code maintenance and demo page (`/admin`) construction (not for production deployment).
 
 ## Project Architecture
 
