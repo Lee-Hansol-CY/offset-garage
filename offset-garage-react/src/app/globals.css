@@ -4,13 +4,34 @@
 
 /* --- VARIABLES & BASE STYLES --- */
 :root {
+    /* Colors - Light Mode (Default) */
+    --bg-color: #00FF00;
+    --text-color: #000000;
+    --box-bg-color: #FFFFFF;
+    --box-border-color: #000000;
+    --box-content-color: #000000; /* For content inside boxes */
+    --overlay-bg-color: rgba(255, 255, 255, 0.8);
+    --overlay-text-color: #000000;
+
     /* Typography */
     --font-family: "Arial Narrow", "Arial Bold", Arial, sans-serif; /* Arial Narrow 우선 */
     --font-stretch-value: 80%; /* 폰트 너비 80% (폰트 지원 여부에 따라 달라질 수 있음) */
     --font-weight: bold; /* Bold로 통일 */
 
+    /* Sizing */
+    --button-height-sm: 32px;
+    --button-height-lg: 48px;
+    --border-width: 1.5px;
+
     /* Speech Bubble Tail */
     --tail-left: 50%; /* Default, will be set by JS */
+}
+
+.dark {
+    --bg-color: #7F7F7F;
+    --text-color: #000000; /* As per request, content color remains black */
+    --overlay-bg-color: rgba(0, 0, 0, 0.8);
+    --overlay-text-color: #FFFFFF;
 }
 
 * {
@@ -25,7 +46,8 @@
 }
 
 body {
-    /* Tailwind will handle background-color and text-color based on theme context */
+    background-color: var(--bg-color);
+    color: var(--text-color);
     overflow: hidden; /* Prevent scrollbars from layout shifts */
     transition: background-color 0.3s ease;
     width: 100%;
@@ -61,39 +83,43 @@ body {
     display: block; /* 블록 요소로 만들어 크기 제어 용이 */
 }
 
-.logo-box, .nav-button { /* .theme-button, .theme-dropdown은 제외 */
-    /* Tailwind will handle background-color, border, color */
+.logo-box, .nav-button {
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
+    color: var(--box-content-color);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .logo-box {
+    position: relative; /* Required for Next.js Image with fill prop */
     padding: 10px;
-    height: 60px; /* 로고 크기 키움 */
-    width: auto; /* 너비는 내용에 맞게 자동 조절 */
+    height: 60px;
+    width: 200px; /* Set a specific width */
 }
 .logo-box img {
     height: 100%;
     display: block;
+    object-fit: contain; /* 이미지 비율 유지하며 박스에 맞춤 */
 }
 
-.header-nav { /* Inkdrop과 About 버튼 컨테이너 */
-    display: flex; /* 버튼들을 가로로 나열 */
-    flex-direction: row; /* 가로 나열 */
-    margin-left: 10px; /* 로고와의 간격 */
+.header-nav {
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
 }
 
 .nav-button {
-    /* height: var(--button-height-lg); */ /* Handled by Tailwind spacing */
+    height: var(--button-height-lg);
     padding: 0 20px;
     text-decoration: none;
-    /* font-size: var(--fs-18); */ /* Handled by Tailwind font size */
-    margin-right: 10px; /* 버튼들 사이의 간격 */
+    font-size: var(--fs-18);
+    margin-right: 10px;
     cursor: pointer;
 }
 .nav-button:last-child {
-    margin-right: 0; /* 마지막 버튼은 오른쪽 마진 없음 */
+    margin-right: 0;
 }
 
 .theme-switcher {
@@ -101,15 +127,14 @@ body {
 }
 
 .theme-button {
-    /* height: var(--button-height-lg); */ /* Handled by Tailwind spacing */
+    height: var(--button-height-lg);
     width: 120px;
-    /* font-size: var(--fs-18); */ /* Handled by Tailwind font size */
+    font-size: var(--fs-18);
     cursor: pointer;
-    /* 테마 버튼 겉박스 제거 */
-    background: none; /* 배경색 제거 */
-    border: none; /* 테두리 제거 */
-    /* color: var(--text-color); */ /* Handled by Tailwind text color */
-    padding: 0; /* 패딩 제거 */
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 0;
 }
 
 .theme-dropdown {
@@ -118,69 +143,67 @@ body {
     right: 0;
     width: 100%;
     flex-direction: column;
-    padding: 0; /* 패딩 제거 */
-    background: none; /* 배경색 제거 */
-    border: none; /* 테두리 제거 */
+    padding: 0;
+    background: none;
+    border: none;
 }
 .theme-dropdown button {
     background: none;
     border: none;
-    padding: 10px; /* 내부 패딩 유지 */
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind font size */
-    /* color: var(--text-color); */ /* Handled by Tailwind text color */
+    padding: 10px;
+    font-size: var(--fs-14);
+    color: var(--text-color);
     cursor: pointer;
     text-align: center;
     width: 100%;
 }
 .theme-dropdown button:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* 호버 시 약간의 배경색 */
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* --- MAIN ARTWORK GRID / GUESTBOOK GRID --- */
-#art-grid { /* Main page grid - no fixed height, allows full viewport positioning */
+#art-grid {
     position: relative;
     width: 100vw;
-    height: 100vh; /* Occupy full viewport to contain absolutely positioned children */
-    /* Removed overflow-y: auto and padding-top/bottom here */
+    height: 100vh;
 }
 
-#guestbook-grid { /* Guestbook page grid - still needs controlled height and scroll */
+#guestbook-grid {
     position: relative;
     width: 100vw;
-    height: calc(100vh - 40px - var(--button-height-lg) - 20px - 70px); /* header(top+height+bottom-margin) + footer(height+bottom) + input(height) */
-    overflow-y: auto; /* Allow scrolling for content */
-    padding: 20px; /* General padding for the grid area */
-    padding-top: calc(20px + var(--button-height-lg) + 20px); /* Account for header */
-    padding-bottom: calc(20px + 70px); /* Account for footer and input area */
+    height: calc(100vh - 40px - var(--button-height-lg) - 20px - 70px);
+    overflow-y: auto;
+    padding: 20px;
+    padding-top: calc(20px + var(--button-height-lg) + 20px);
+    padding-bottom: calc(20px + 70px);
 }
 
 
 .thumbnail-box {
     position: absolute;
-    /* Tailwind will handle background-color, border, color */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
+    color: var(--box-content-color);
     min-width: 150px;
     max-width: 420px;
-    cursor: grab; /* Default for draggable, removed for guestbook-entry */
-    transition: left 0.2s ease-out, top 0.2s ease-out; /* For persistent push */
+    cursor: grab;
+    transition: left 0.2s ease-out, top 0.2s ease-out;
     z-index: 10;
 }
 .thumbnail-box.dragging {
     cursor: grabbing;
     z-index: 999;
-    transition: none; /* Disable transition during drag to prevent ghosting */
+    transition: none;
 }
-/* Guestbook entries are not draggable */
 .thumbnail-box.guestbook-entry {
-    cursor: default; /* Not draggable */
+    cursor: default;
 }
 
 
-/* Common content styling for thumbnail boxes that need initial padding */
 .thumbnail-box .content.initial-padding {
-    padding: 15px; /* Apply padding to content div instead of box */
+    padding: 15px;
 }
 
-/* Aspect Ratios (example sizes, will be dynamic) */
 .ratio-1-1   { width: 300px; height: 300px; }
 .ratio-16-9  { width: 420px; height: 236.25px; }
 .ratio-4-3   { width: 360px; height: 270px; }
@@ -190,7 +213,6 @@ body {
 .ratio-1-2   { width: 200px; height: 400px; }
 .ratio-1-3   { width: 150px; height: 450px; }
 
-/* Box Content Types */
 .thumbnail-box .content {
     width: 100%;
     height: 100%;
@@ -203,7 +225,7 @@ body {
 }
 .thumbnail-box.image-only {
     border-width: 0;
-    padding: 0; /* No padding for image only boxes */
+    padding: 0;
 }
 .image-only img {
     width: 100%;
@@ -212,65 +234,61 @@ body {
     display: block;
 }
 
-/* Speech Bubble Design (Rolled back to original black tail, position controlled by JS) */
 .speech-bubble {
     position: relative;
-    /* Tailwind will handle border, background-color */
-    /* Padding is now handled by .content.initial-padding */
-    overflow: visible; /* Ensure pseudo-elements are visible outside */
+    border: var(--border-width) solid var(--box-border-color);
+    background-color: var(--box-bg-color);
+    overflow: visible;
 }
-/* Tail: A single black triangle extending from the bottom border */
 .speech-bubble::after {
     content: '';
     position: absolute;
-    bottom: calc(-15px - var(--border-width)); /* Position below the box, accounting for border */
-    left: var(--tail-left); /* Controlled by JS: 10% or 90% */
-    transform: translateX(-50%); /* Center the tail relative to its left position */
+    bottom: calc(-15px - var(--border-width));
+    left: var(--tail-left);
+    transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 15px solid transparent; /* Tail width */
-    border-right: 15px solid transparent; /* Tail width */
-    /* border-top: 15px solid var(--box-border-color); */ /* Handled by Tailwind */
-    z-index: 1; /* Ensure it's visible */
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid var(--box-border-color);
+    z-index: 1;
 }
 
 
-/* Checklist Box Design */
 .checklist-box-type {
-    /* Removed padding here */
 }
 .checklist-box-type .content.checklist-layout {
     display: flex;
-    flex-direction: row; /* 좌우 분할 */
-    align-items: stretch; /* 높이를 채우도록 */
+    flex-direction: row;
+    align-items: stretch;
     justify-content: space-between;
-    padding: 0; /* No padding on this content div, children apply their own */
-    height: 100%; /* Ensure content fills the box */
+    padding: 0;
+    height: 100%;
 }
 
 .checklist-text-area {
-    flex: 1; /* 남은 공간을 차지 */
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px; /* 내부 패딩 조정 */
+    padding: 10px;
     text-align: center;
 }
 
 .separator {
-    /* width: var(--border-width); */ /* Handled by Tailwind */
-    /* background-color: var(--box-border-color); */ /* Handled by Tailwind */
-    height: 100%; /* 박스 끝부터 끝까지 이어지도록 */
-    align-self: stretch; /* 부모 flex 컨테이너의 전체 높이를 채우도록 */
+    width: var(--border-width);
+    background-color: var(--box-border-color);
+    height: 100%;
+    align-self: stretch;
 }
 
 .checklist-items-area {
-    flex: 1; /* 남은 공간을 차지 */
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 10px; /* 내부 패딩 조정 */
+    padding: 10px;
 }
 
 .checklist-items-area ul {
@@ -288,20 +306,19 @@ body {
     margin-bottom: 0;
 }
 
-/* Custom Checkbox Design (Changed to black square fill, improved size and alignment) */
 input[type="checkbox"] {
-    display: none; /* Hide default checkbox */
+    display: none;
 }
 
 .custom-checkbox {
     position: relative;
-    padding-left: 25px; /* Space for custom checkbox */
+    padding-left: 25px;
     cursor: pointer;
-    line-height: 1.2; /* Adjust line-height for better vertical alignment */
-    display: flex; /* Use flexbox for label content alignment */
+    line-height: 1.2;
+    display: flex;
     align-items: center;
-    min-height: 16px; /* Ensure minimum height for alignment */
-    width: fit-content; /* Prevent label from taking full width and misaligning */
+    min-height: 16px;
+    width: fit-content;
 }
 
 .custom-checkbox::before {
@@ -310,33 +327,31 @@ input[type="checkbox"] {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 16px; /* Size of custom checkbox */
+    width: 16px;
     height: 16px;
-    /* background-color: var(--box-bg-color); */ /* Handled by Tailwind */
-    /* border: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
     display: block;
 }
 
 input[type="checkbox"]:checked + .custom-checkbox::before {
-    /* background-color: var(--box-content-color); */ /* Handled by Tailwind */
+    background-color: var(--box-content-color);
 }
 
 
-/* Font Size Classes */
-/* .fs-36 { font-size: var(--fs-36); } */ /* Handled by Tailwind */
-/* .fs-18 { font-size: var(--fs-18); } */ /* Handled by Tailwind */
-/* .fs-14 { font-size: var(--fs-14); } */ /* Handled by Tailwind */
-/* .fs-12 { font-size: var(--fs-12); } */ /* Handled by Tailwind */
+.fs-36 { font-size: var(--fs-36); }
+.fs-18 { font-size: var(--fs-18); }
+.fs-14 { font-size: var(--fs-14); }
+.fs-12 { font-size: var(--fs-12); }
 
 
-/* --- ABOUT OVERLAY --- */
 #about-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* background-color: var(--overlay-bg-color); */ /* Handled by Tailwind */
+    background-color: var(--overlay-bg-color);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1001;
@@ -348,14 +363,14 @@ input[type="checkbox"]:checked + .custom-checkbox::before {
 .about-content {
     max-width: 800px;
     padding: 40px;
-    /* background-color: var(--box-bg-color); */ /* Handled by Tailwind */
-    /* border: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
-    /* color: var(--overlay-text-color); */ /* Handled by Tailwind */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
+    color: var(--overlay-text-color);
     position: relative;
 }
-.dark-mode .about-content {
-    background-color: transparent; /* Overlay bg handles color */
-    /* border: var(--border-width) solid var(--overlay-text-color); */ /* Handled by Tailwind */
+.dark .about-content {
+    background-color: transparent;
+    border: var(--border-width) solid var(--overlay-text-color);
 }
 #close-about-button {
     position: absolute;
@@ -363,165 +378,163 @@ input[type="checkbox"]:checked + .custom-checkbox::before {
     right: 10px;
     background: none;
     border: none;
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind */
-    /* color: var(--overlay-text-color); */ /* Handled by Tailwind */
+    font-size: var(--fs-14);
+    color: var(--overlay-text-color);
     cursor: pointer;
 }
 .about-content h2 {
-    /* font-size: var(--fs-36); */ /* Handled by Tailwind */
+    font-size: var(--fs-36);
     margin-bottom: 20px;
 }
 .about-content p {
-    /* font-size: var(--fs-18); */ /* Handled by Tailwind */
+    font-size: var(--fs-18);
     line-height: 1.6;
     margin-bottom: 15px;
 }
 
-/* --- VERSION INDICATOR (Hover UI Fixed) --- */
 #version-indicator {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    /* height: var(--button-height-sm); */ /* Handled by Tailwind */
+    height: var(--button-height-sm);
     padding: 0 15px;
-    /* border: var(--border-width) solid var(--box-content-color); */ /* Handled by Tailwind */
-    /* color: var(--box-content-color); */ /* Handled by Tailwind */
+    border: var(--border-width) solid var(--box-content-color);
+    color: var(--box-content-color);
     background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind */
+    font-size: var(--fs-14);
     z-index: 1000;
     cursor: default;
 }
 
-/* Make sure .info-box inherits box styles and is initially hidden */
 #version-indicator .info-box {
-    /* display: none; */ /* Handled by Tailwind */
+    display: none;
     position: absolute;
-    bottom: calc(100% + 10px); /* Position above the indicator */
-    left: calc(0px - var(--border-width)); /* Align with parent's outer left border */
+    bottom: calc(100% + 10px);
+    left: calc(0px - var(--border-width));
     width: 300px;
-    /* background-color: var(--box-bg-color); */ /* Handled by Tailwind */
-    /* border: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
     padding: 15px;
-    /* color: var(--box-content-color); */ /* Handled by Tailwind */
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind */
+    color: var(--box-content-color);
+    font-size: var(--fs-14);
     text-align: left;
-    z-index: 1002; /* Ensure it's above other elements if necessary */
+    z-index: 1002;
 }
 #version-indicator:hover .info-box {
-    display: block; /* Show on hover */
+    display: block;
 }
 .info-box h4 {
-    /* font-size: var(--fs-18); */ /* Handled by Tailwind */
+    font-size: var(--fs-18);
     margin-bottom: 10px;
 }
 .info-box ul {
     list-style: none;
-    padding-left: 0; /* Remove default list padding */
+    padding-left: 0;
     margin-bottom: 10px;
 }
 .info-box li {
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind */
+    font-size: var(--fs-14);
     margin-bottom: 5px;
-    padding-left: 10px; /* Custom indent for list items */
+    padding-left: 10px;
     position: relative;
 }
 .info-box li::before {
-    content: '- '; /* Simple bullet point */
+    content: '- ';
     position: absolute;
     left: 0;
     top: 0;
 }
-.info-box ul:last-child { /* Remove margin-bottom for the last ul */
+.info-box ul:last-child {
     margin-bottom: 0;
 }
 
 
-/* --- FOOTER --- */
 .site-footer-bottom {
     position: fixed;
     bottom: 0;
     width: 100%;
     text-align: center;
     padding: 10px;
-    /* font-size: var(--fs-14); */ /* Handled by Tailwind */
-    /* color: var(--text-color); */ /* Handled by Tailwind */
+    font-size: var(--fs-14);
+    color: var(--text-color);
     z-index: 1;
 }
 
 
-/* --- GUESTBOOK INPUT AREA --- */
 .guestbook-input-container {
     position: fixed;
-    bottom: calc(var(--button-height-sm) + 20px); /* Footer height (32px) + 20px bottom padding */
+    bottom: calc(var(--button-height-sm) + 20px);
     left: 0;
     width: 100%;
-    padding: 10px 20px; /* General padding */
+    padding: 10px 20px;
     display: flex;
-    align-items: flex-end; /* 하단 정렬 */
-    /* background-color: var(--bg-color); */ /* Handled by Tailwind */
-    /* border-top: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
-    z-index: 900; /* Header, About보다 아래, Footer보다 위 */
+    align-items: flex-end;
+    background-color: var(--bg-color);
+    border-top: var(--border-width) solid var(--box-border-color);
+    z-index: 900;
 }
 
 .guestbook-input-container textarea {
-    flex-grow: 1; /* 남은 공간 모두 차지 */
-    /* min-height: var(--button-height-lg); */ /* Handled by Tailwind */
-    max-height: 150px; /* 최대 높이 제한 */
+    flex-grow: 1;
+    min-height: var(--button-height-lg);
+    max-height: 150px;
     padding: 10px;
     margin-right: 10px;
-    /* background-color: var(--box-bg-color); */ /* Handled by Tailwind */
-    /* border: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
-    /* color: var(--box-content-color); */ /* Handled by Tailwind */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
+    color: var(--box-content-color);
     font-family: var(--font-family);
     font-weight: var(--font-weight);
     font-stretch: var(--font-stretch-value);
-    resize: none; /* 사용자 임의 크기 조절 방지, JS로 제어 */
-    overflow: hidden; /* 스크롤바 숨김 */
-    line-height: 1.2; /* 텍스트 라인 높이 */
+    resize: none;
+    overflow: hidden;
+    line-height: 1.2;
 }
 
 .guestbook-input-container textarea::placeholder {
-    color: rgba(0, 0, 0, 0.5); /* Placeholder text color */
+    color: rgba(0, 0, 0, 0.5);
 }
-.dark-mode .guestbook-input-container textarea::placeholder {
+.dark .guestbook-input-container textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
 .input-controls {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* 우측 정렬 */
-    justify-content: space-between; /* 버튼과 글자 수 카운터 분리 */
-    /* height: var(--button-height-lg); */ /* Handled by Tailwind */
+    align-items: flex-end;
+    justify-content: space-between;
+    height: var(--button-height-lg);
 }
 
 #char-count {
-    color: #7F7F7F; /* 회색의 작은 글씨 */
-    margin-bottom: 5px; /* 버튼과의 간격 */
+    color: #7F7F7F;
+    margin-bottom: 5px;
 }
 
 #drop-it-button {
-    /* height: var(--button-height-lg); */ /* Handled by Tailwind */
-    width: 100px; /* 고정 너비 */
-    padding: 0; /* 내부 패딩 제거 */
-    /* font-size: var(--fs-18); */ /* Handled by Tailwind */
+    height: var(--button-height-lg);
+    width: 100px;
+    padding: 0;
+    font-size: var(--fs-18);
 }
 
 .guestbook-message {
     position: absolute;
-    bottom: calc(100% + 5px); /* Input container 위 */
+    bottom: calc(100% + 5px);
     left: 20px;
     right: 20px;
-    /* background-color: var(--box-bg-color); */ /* Handled by Tailwind */
-    /* border: var(--border-width) solid var(--box-border-color); */ /* Handled by Tailwind */
-    /* color: var(--box-content-color); */ /* Handled by Tailwind */
+    background-color: var(--box-bg-color);
+    border: var(--border-width) solid var(--box-border-color);
+    color: var(--box-content-color);
     padding: 10px;
     text-align: center;
     z-index: 901;
 }
 
 /* --- UTILITY --- */
-/* .hidden { display: none !important; } */ /* Handled by Tailwind */
+.hidden {
+    display: none !important;
+}

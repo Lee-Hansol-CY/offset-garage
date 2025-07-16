@@ -3,6 +3,23 @@
 - To proceed with tasks step-by-step, call `shrimp-task-manager mcp`.
 - For deep thinking, set `Ultrathink-mode`.
 
+## Project Log
+
+**2025-07-16: Resolved Blank Screen Issue**
+- **Problem:** The application rendered a blank white screen on localhost without any console errors.
+- **Analysis:** The issue was traced to the `useThumbnailPlacement` custom hook. This hook, responsible for calculating the initial positions of thumbnail components, was attempting to access the `window` object during server-side rendering (SSR). Since the `window` object is only available in the client-side browser environment, this caused the position calculation to fail, preventing any thumbnails from being rendered.
+- **Solution:** The `useThumbnailPlacement` hook was modified to ensure its logic only executes on the client side. This was achieved by introducing an `isClient` state that is set to `true` within a `useEffect` hook (which only runs on the client). The position calculation logic is now dependent on `isClient` being `true`, effectively deferring the `window`-dependent code until the component has mounted in the browser.
+
+**2025-07-16: Backend Implementation & Build Issues**
+- **Problem:** Implemented Supabase backend for guestbook functionality, but encountered a persistent build error (`Type 'number' is not assignable to type 'Partial<CustomThemeConfig>'`) during `npm run build`, despite `npm run dev` working correctly.
+- **Analysis:** The error was traced to `tailwind.config.ts`'s `extend` object, specifically the multi-line string definition for `backgroundImage.gradient-conic`. The TypeScript compiler was misinterpreting this as a `number` type during the production build process.
+- **Solution:** The `gradient-conic` definition within `tailwind.config.ts` was refactored from a multi-line string to a single-line string. This resolved the TypeScript type assignment error and allowed the project to build successfully without impacting the UI/UX.
+
+**2025-07-16: Guestbook Delete Functionality**
+- **Problem:** The guestbook delete button was not working correctly. Deleting an entry resulted in a 500 error, and the entry would reappear on the page.
+- **Analysis:** The `revalidatePath` function, which is necessary to invalidate the Next.js cache and update the UI, was being called in `src/app/api/guestbook/route.ts` without being imported. This caused a server-side error.
+- **Solution:** The `revalidatePath` function was imported from `next/cache` in the API route. Additionally, the path was changed from `/api/guestbook` to `/inkdrop` to correctly revalidate the page where the guestbook is displayed. This resolved the error and ensured that deleted entries are properly removed from the UI.
+
 ## Project Architecture
 
 ### Overview
@@ -25,13 +42,13 @@ This project will be developed using a modern full-stack architecture leveraging
         *   **Serverless Functions:** API Routes are deployed as serverless functions on Netlify, scaling automatically with demand.
 
 3.  **Database & Authentication: Supabase**
-    *   **Purpose:** Providing a robust PostgreSQL database for storing application data (e.g., guestbook entries) and managing user authentication.
+    *   **Purpose:** Providing a robust PostgreSQL database for storing application data (e.g., guestbook entries, artwork data) and managing user authentication.
     *   **Key Features:**
         *   **PostgreSQL Database:** Reliable and powerful relational database.
         *   **Authentication:** Built-in user management, including email/password, OAuth, etc.
         *   **Realtime:** Realtime subscriptions for instant data updates.
         *   **Row Level Security (RLS):** Fine-grained access control to database rows.
-        *   **Storage:** Object storage for files (e.g., user avatars, if needed later).
+        *   **Storage:** Object storage for files (e.g., user avatars, artwork images).
 
 4.  **Deployment: Netlify**
     *   **Purpose:** Hosting the Next.js application, automatically deploying from Git, and serving Next.js API Routes as serverless functions.
@@ -44,13 +61,10 @@ This project will be developed using a modern full-stack architecture leveraging
 ### Data Flow
 
 1.  **User Interaction:** User interacts with the Next.js frontend.
-2.  **API Request:** Frontend makes API requests to Next.js API Routes (e.g., to submit a guestbook entry).
-3.  **Backend Processing:** Next.js API Route processes the request, interacts with Supabase (e.g., inserts data into the PostgreSQL database).
+2.  **API Request:** Frontend makes API requests to Next.js API Routes (e.g., to submit a guestbook entry or upload artwork).
+3.  **Backend Processing:** Next.js API Route processes the request, interacts with Supabase (e.g., inserts data into the PostgreSQL database, uploads files to Storage).
 4.  **Database Response:** Supabase responds to the API Route.
 5.  **Frontend Update:** API Route sends a response back to the frontend, which then updates the UI.
-6.  **Realtime Updates (Optional):** Supabase can push realtime updates to the frontend for features like live guestbook comments.
-
-This architecture provides a clear separation of concerns while maintaining a streamlined development workflow, making it suitable for rapid development and future scalability.
 
 ### Project Architecture (Updated)
 
@@ -63,34 +77,37 @@ This architecture provides a clear separation of concerns while maintaining a st
 ```
 /offset-garage-react
 ├── public/
-│   ├── images/             # Static assets like images (copied from old project)
+│   ├── artworks/           # Artwork specific assets
+│   ├── images/             # Static assets like images
 │   └── favicon.ico         # Favicon
 ├── src/
 │   ├── app/
+│   │   ├── globals.css     # Global styles
 │   │   ├── layout.tsx      # Root layout for the application
 │   │   ├── page.tsx        # Main page (index.html equivalent)
-│   │   ├── inkdrop/
-│   │   │   └── page.tsx    # Guestbook page (inkdrop.html equivalent)
+│   │   ├── inkdrop/        # Guestbook page (inkdrop.html equivalent)
+│   │   │   └── page.tsx
+│   │   ├── admin/            # Admin/Demo page for managing content
+│   │   │   └── page.tsx
 │   │   ├── api/            # Next.js API Routes
 │   │   │   ├── guestbook/
 │   │   │   │   └── route.ts # API endpoint for guestbook operations
-│   │   │   └── auth/
-│   │   │       └── route.ts # API endpoint for authentication (if needed)
-│   │   └── globals.css     # Global styles (Tailwind CSS import and remaining global CSS)
+│   │   │   └── artwork/
+│   │   │       └── route.ts # API endpoint for artwork operations
 │   ├── components/         # Reusable React components
-│   │   ├── common/         # General purpose components (e.g., Header, Footer, Button, AboutOverlay, VersionIndicator)
+│   │   ├── common/         # General purpose components (e.g., Header, Footer, AboutOverlay)
 │   │   ├── artwork/        # Components specific to artwork display (e.g., ThumbnailBox)
-│   │   └── guestbook/      # Components specific to guestbook (e.g., GuestbookEntry, GuestbookInput)
+│   │   ├── guestbook/      # Components specific to guestbook (e.g., GuestbookEntry, GuestbookInput)
+│   │   └── admin/          # Components for the admin page (e.g., ArtworkUploader)
 │   ├── hooks/              # Custom React Hooks
 │   │   ├── useDraggable.ts # Hook for drag functionality
-│   │   └── useTheme.ts     # Hook for theme switching
+│   │   └── useThumbnailPlacement.ts # Hook for initial thumbnail placement
 │   ├── context/            # React Context API for global state management
 │   │   └── ThemeContext.tsx # Context for theme switching
-│   ├── lib/                # Utility functions and Supabase client initialization
-│   │   ├── supabase.ts     # Supabase client setup
-│   │   └── utils.ts        # General utility functions
-│   └── types/              # TypeScript type definitions
-│       └── index.d.ts      # Global type definitions
+│   ├── lib/                # Utility functions
+│   │   ├── artworkData.ts  # Artwork data utilities
+│   │   ├── utils.ts        # General utility functions
+│   │   └── supabaseClient.ts # Supabase client initialization
 ├── .env.local              # Environment variables (e.g., Supabase API keys)
 ├── next.config.js          # Next.js configuration
 ├── package.json            # Project dependencies and scripts

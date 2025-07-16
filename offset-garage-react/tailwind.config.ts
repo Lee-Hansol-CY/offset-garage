@@ -6,21 +6,18 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class', // Enable dark mode based on class
   theme: {
     extend: {
       colors: {
-        'bg-light': '#00FF00',
-        'text-light': '#000000',
-        'box-bg-light': '#FFFFFF',
-        'box-border-light': '#000000',
-        'box-content-light': '#000000',
-        'overlay-bg-light': 'rgba(255, 255, 255, 0.8)',
-        'overlay-text-light': '#000000',
-
-        'bg-dark': '#7F7F7F',
-        'text-dark': '#000000', // Remains black as per request
-        'overlay-bg-dark': 'rgba(0, 0, 0, 0.8)',
-        'overlay-text-dark': '#FFFFFF',
+        // Light Mode (Default) - Mapped from CSS variables in globals.css
+        'bg-color': 'var(--bg-color)',
+        'text-color': 'var(--text-color)',
+        'box-bg-color': 'var(--box-bg-color)',
+        'box-border-color': 'var(--box-border-color)',
+        'box-content-color': 'var(--box-content-color)',
+        'overlay-bg-color': 'var(--overlay-bg-color)',
+        'overlay-text-color': 'var(--overlay-text-color)',
       },
       fontSize: {
         'fs-36': '36px',
@@ -37,11 +34,7 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(
-            from 180deg at 50% 50%,
-            var(--tw-gradient-stops)
-          )',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },
